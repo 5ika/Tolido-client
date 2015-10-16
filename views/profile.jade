@@ -1,0 +1,41 @@
+extends layout
+
+block content
+    .container
+        .row.infos-profile           
+            .col.m8.s12
+                | <strong>Votre ID :</strong> !{user._id} <br>
+                | <strong>e-Mail :</strong> !{user.local.email} <br>
+                a(onclick='showToken()' href='#') Voir mon token
+                |  (pour les développeurs) <br>
+                a(onclick='deleteUser()' href='#') Supprimer le compte <br>
+                :markdown
+                    Tolido est un service développé avec NodeJS par [Tim Izzo / Sika](http://blog.5ika.org).
+                    L'application est open-source. Vous pouvez la reprendre et/ou la modifier depuis [GitHub](https://github.com/5ika/Tolido-client).
+                    
+                    Vous pouvez utiliser l'API de Tolido grâce à votre token utilisateur ci-dessous. Cela permet de créer d'autres clients pour gérer vos projets et tâches (une application Android par exemple).
+                    Il n'existe pas encore de documentation pour utiliser l'API pour le moment mais ça devrait arriver.
+                    
+                    Pour l'instant, la liaison ainsi que les informations dans la base de données ne sont pas chiffrées. Cette fonctionnalité arrivera très prochainement.                                  
+            
+            .col.m4.s12
+                a(href='https://github.com/5ika/').btn.btn-flat
+                    .fa.fa-github-alt
+                    |  GitHub
+                a(href='/user/logout').btn.btn-flat
+                    .fa.fa-sign-out
+                    |  Déconnexion        
+                                        
+    .fixed-action-btn                        
+        a(href='/' data-position='left' data-tooltip='Retour').btn-floating.btn-large.waves-effect.waves-light.tooltipped.red
+            .fa.fa-arrow-left
+            
+block script
+    script.
+        function deleteUser(){
+            if(confirm("Êtes-vous certain de vouloir supprimer ?")) window.location = "/user/delete";
+        }
+
+        function showToken(){
+            alert("Voici votre token. Gardez-le préciseuement : !{user.token.value}");
+        }

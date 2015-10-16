@@ -1,0 +1,76 @@
+extends layout
+
+block content
+    .projects-cards.row
+    
+    #fab.fixed-action-btn
+        #fab-btn.a.btn-floating.btn-large.red
+            i.fa.fa-arrow-up
+        ul
+            li.hide-on-small-only
+                a.btn-floating.btn-large.waves-effect.tooltipped.white(href='#' onclick='toggleView()' data-position='left' data-tooltip='Vue en colonne')
+                    i.fa.fa-bars.grey-text 
+            li
+                a.btn-floating.btn-large.waves-effect.tooltipped.grey.lighten-1(href='/user/profile' data-position='left' data-tooltip='Mon profile')
+                    i.fa.fa-gear 
+            li
+                a.btn-floating.btn-large.waves-effect.tooltipped.blue.lighten-3.modal-trigger(href='#categoriesModal' data-position='left' data-tooltip='Filtrer par catégories')
+                    i.fa.fa-filter    
+            li
+                a.btn-floating.btn-large.waves-effect.tooltipped.blue.lighten-1.modal-trigger(href='#addProjectModal' data-position='left' data-tooltip='Ajouter un projet')
+                    i.fa.fa-plus 
+                    
+    #token.hide #{token.value}
+
+block modals
+    #addTaskModal.modal
+        .modal-content
+            h4 Ajouter une tâche
+                .row
+                    .input-field.col.s12.m12
+                        input#taskName(type='text')
+                        label(for="taskName") Nom de la tâche
+                    .input-field.col.s12.m12
+                        input#taskGroup(type='text')
+                        label(for="taskGroup") Groupe
+                    .input-field.col.s12.m12
+                        select#taskPriority
+                            option(value="Todo" selected) Todo
+                            option(value="Important") Important
+                            option(value="Urgent") Urgent
+                        label Priorité
+        .modal-footer
+            button(onclick="addTask()").btn.modal-action.waves-effect.btn-flat Ajouter
+            button.btn.modal-action.modal-close.waves-effect.btn-flat Fermer
+            
+    #addProjectModal.modal
+        .modal-content
+            h4 Ajouter un nouveau projet
+                .row
+                    .input-field.col.s12.m12
+                        input#projectName(type='text')
+                        label(for="projectName") Nom du projet
+                    .input-field.col.s12.m12
+                        input#projectDescription(type='text')
+                        label(for="projectDescription") Description
+                    .input-field.col.s12.m12
+                        input#projectCategory(type='text')
+                        label(for="projectCategory") Catégorie
+        .modal-footer
+            button(onclick="addProject()").btn.modal-action.waves-effect.btn-flat Ajouter
+            button.btn.modal-action.modal-close.waves-effect.btn-flat Fermer
+            
+    #categoriesModal.modal
+        .modal-content
+            h4 Filtrer par catégorie
+            .collection.categories
+                a.collection-item(onclick='displayCategory("all")' href="#") Toutes
+        .modal-footer
+            button.btn.modal-action.modal-close.waves-effect.btn-flat Fermer
+                    
+
+block script
+    script(src='/js/api.js')
+    script(src='/js/format.js')
+    script(src='/js/cards.js')
+    script(src='/js/touch.js')
