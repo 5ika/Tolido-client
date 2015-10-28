@@ -37,8 +37,9 @@ function toCard(project) {
                 card.push(" <span class='task-group'>" + task.group +
                     "</span>");
                 card.push(getTaskPriority(task.priority));
+                card.push(getTaskDelay(task.delay));
                 card.push("</div><div class='taskOptions'>" +
-                    getTaskOptions(task._id, project._id) +
+                    getTaskOptions(task._id, project._id, task.delay) +
                     "</div></li>");
             }
         });
@@ -56,15 +57,19 @@ function toCard(project) {
 }
 
 
-function getTaskOptions(id, projectId) {
+function getTaskOptions(id, projectId, delay) {
     var options =
-        '<div class="row"><i class="fa fa-trash-o fa-2x col s6" onclick="deleteTask(\'' +
+        '<div class="row"><i class="fa fa-trash-o fa-2x col s4" onclick="deleteTask(\'' +
         id +
         '\', \'' + projectId +
-        '\')"></i><i class="fa fa-check fa-2x col s6" onclick="validTask(\'' +
+        '\')"></i><i class="fa fa-pencil fa-2x col s4" onclick="toUpdateTask(\'' +
+        id +
+        '\',\'' + projectId +
+        '\')"></i><i class="fa fa-check fa-2x col s4" onclick="validTask(\'' +
         id +
         '\',\'' + projectId +
         '\')"></i></div>';
+    if (delay) options += "<strong>Délai : </strong>" + formatDate(delay);
     return options;
 }
 
@@ -84,4 +89,10 @@ function getTaskPriority(priority) {
                 "<i class=' secondary-content fa fa-circle fa-lg yellow-text'></i>";
     }
     return icone;
+}
+
+function getTaskDelay(delay) {
+    if (delay) {
+        return "<i class=' secondary-content fa fa-clock-o fa-lg'></i>";
+    } else return "";
 }

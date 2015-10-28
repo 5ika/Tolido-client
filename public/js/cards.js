@@ -13,6 +13,10 @@ $(document).ready(function() {
     $('.modal-trigger').leanModal();
     $('select').material_select();
     displayProjects();
+    $('.datepicker').pickadate({
+        selectMonths: true, // Creates a dropdown to control month
+        selectYears: 15 // Creates a dropdown of 15 years to control year
+    });
 });
 
 function toast(msg) {
@@ -73,4 +77,29 @@ function toggleFAB() {
     if ($("#fab").hasClass('active')) {
         $('.fixed-action-btn').closeFAB();
     } else $('.fixed-action-btn').openFAB();
+}
+
+function toUpdateTask(idTask, idProject) {
+    getTask(idTask, idProject, function(task) {
+        $("#updateTaskModal .taskName").val(task.name);
+        $("#updateTaskModal .taskGroup").val(task.group);
+        $("#updateTaskModal .taskDelay").val(formatDate(task.delay));
+        $("#update-" + task.priority).prop("checked", true);
+        $("#updateTaskModal .taskID").val(idTask);
+        $("#updateTaskModal .projectID").val(idProject);
+        $("#updateTaskModal").openModal();
+    })
+}
+
+function getSelectedPriority(type = 'add') {
+    if ($("#" + type + "-Important").is(':checked')) return "Important";
+    else if ($("#" + type + "-Urgent").is(':checked')) return "Urgent";
+    else return "Todo";
+}
+
+function formatDate(dateString) {
+    if (dateString) {
+        var date = new Date(dateString);
+        return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
+    } else return "Sélectionner une date de fin";
 }

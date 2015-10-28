@@ -160,6 +160,10 @@ a {
  }
  .secondary-content{
      padding-top:4px;
+     margin-left: 5px;
+ }
+ .fa-clock-o{
+     color:#616161;
  }
  .infos-profile{
      margin-top:50px;

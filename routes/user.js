@@ -13,6 +13,7 @@ router.get('/', function(req, res) {
 // =====================================
 // show the login form
 router.get('/login', function(req, res) {
+    console.log(req.user);
 
     // render the page and pass in any flash data if it exists
     res.render('login', {

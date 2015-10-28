@@ -12,8 +12,9 @@ function getProjects(callback) {
 function addTask() {
     var newTask = {
         name: $('#taskName').val(),
-        group: taskGroup = $('#taskGroup').val(),
-        priority: taskPriority = $('#taskPriority').val()
+        group: $('#taskGroup').val(),
+        priority: getSelectedPriority(),
+        delay: $("#taskDelay").val()
     }
     sendRequestToAPI('POST', '/' + idProject, newTask, function(response) {
         if (response.hasOwnProperty('result') && response.result ==
@@ -24,6 +25,13 @@ function addTask() {
             $('#taskGroup').val('');
             refreshProject(idProject);
         }
+    })
+}
+
+// Récupère les infos d'une tâche
+function getTask(idTask, idProject, callback) {
+    sendRequestToAPI("GET", '/' + idProject + '/' + idTask, null, function(task) {
+        callback(task);
     })
 }
 
@@ -48,14 +56,39 @@ function deleteTask(id, projectId) {
 
 // Valide une tâche
 function validTask(id, projectId) {
-    sendRequestToAPI('PUT', '/' + projectId + '/' + id, null, function(
-        response) {
-        if (response.hasOwnProperty('result') && response.result ==
-            "success") {
-            toast("Tâche validée");
-            refreshProject(projectId);
-        }
-    });
+    sendRequestToAPI('PUT', '/' + projectId + '/' + id + '/done', null,
+        function(
+            response) {
+            if (response.hasOwnProperty('result') && response.result ==
+                "success") {
+                toast("Tâche validée");
+                refreshProject(projectId);
+            }
+        });
+}
+
+// Modifie une tâche
+function updateTask() {
+    $("#updateTaskModal").closeModal();
+    var projectId = $("#updateTaskModal .projectID").val(),
+        taskId = $("#updateTaskModal .taskID").val();
+
+    sendRequestToAPI('PUT', '/' + projectId + '/' + taskId, {
+            task: {
+                name: $("#updateTaskModal .taskName").val(),
+                group: $("#updateTaskModal .taskGroup").val(),
+                priority: getSelectedPriority('update'),
+                delay: $("#updateTaskModal .taskDelay").val()
+            }
+        },
+        function(
+            response) {
+            if (response.hasOwnProperty('result') && response.result ==
+                "success") {
+                toast("Tâche modifiée");
+                refreshProject(projectId);
+            }
+        });
 }
 
 // Supprime un projet

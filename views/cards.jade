@@ -26,21 +26,56 @@ block modals
     #addTaskModal.modal
         .modal-content
             h4 Ajouter une tâche
-                .row
-                    .input-field.col.s12.m12
-                        input#taskName(type='text')
-                        label(for="taskName") Nom de la tâche
-                    .input-field.col.s12.m12
-                        input#taskGroup(type='text')
-                        label(for="taskGroup") Groupe
-                    .input-field.col.s12.m12
-                        select#taskPriority
-                            option(value="Todo" selected) Todo
-                            option(value="Important") Important
-                            option(value="Urgent") Urgent
-                        label Priorité
+            .row
+                .input-field.col.s12.m12
+                    input#taskName(type='text')
+                    label(for="taskName") Nom de la tâche
+                .input-field.col.s12.m6
+                    input#taskGroup(type='text')
+                    label(for="taskGroup") Groupe
+                .input-field.col.s12.m6
+                    label(for="taskDelay") Délai
+                    input#taskDelay(type='button').datepicker
+                .input-field.col.s12.m12
+                    .taskPriority.row
+                        .col.s12.m4
+                            input#add-Todo(name="priority" type="radio")
+                            label(for="add-Todo") ToDo
+                        .col.s12.m4
+                            input#add-Important(name="priority" type="radio")
+                            label(for="add-Important") Important
+                        .col.s12.m4
+                            input#add-Urgent(name="priority" type="radio")
+                            label(for="add-Urgent") Urgent
         .modal-footer
             button(onclick="addTask()").btn.modal-action.waves-effect.btn-flat Ajouter
+            button.btn.modal-action.modal-close.waves-effect.btn-flat Fermer
+
+    #updateTaskModal.modal
+        .modal-content
+            h4 Modifier une tâche
+            .row
+                .input-field.col.s12.m12
+                    input.taskName(type='text' placeholder="Nom de la tâche")
+                .input-field.col.s12.m6
+                    input.taskGroup(type='text' placeholder="Groupe")
+                .input-field.col.s12.m6
+                    input.taskDelay(type='button' placeholder="Délai").datepicker
+                .input-field.col.s12.m12
+                    .taskPriority.row
+                        .col.s12.m4
+                            input#update-Todo(name="priority" type="radio")
+                            label(for="update-Todo") ToDo
+                        .col.s12.m4
+                            input#update-Important(name="priority" type="radio")
+                            label(for="update-Important") Important
+                        .col.s12.m4
+                            input#update-Urgent(name="priority" type="radio")
+                            label(for="update-Urgent") Urgent
+                .input(type='hidden').taskID
+                .input(type='hidden').projectID
+        .modal-footer
+            button(onclick="updateTask()").btn.modal-action.waves-effect.btn-flat Enregistrer
             button.btn.modal-action.modal-close.waves-effect.btn-flat Fermer
             
     #addProjectModal.modal
