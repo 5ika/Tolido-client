@@ -4,8 +4,8 @@ function toCard(project) {
     card.push("<div class='card hoverable category-" +
         categories.indexOf(project.category) +
         "'>");
-    card.push("<div class='close' onclick='deleteProject(\"" + project._id +
-        "\")'>&times;</div>");
+    card.push("<i class='close fa fa-circle-o' onclick='toUpdateProject(\"" +
+        project._id + "\")'></i>");
     card.push("<div class='card-content'>");
     // Titre
     card.push("<div class='card-header'>");
@@ -15,6 +15,7 @@ function toCard(project) {
     // Tasks
     if (project.tasks && project.tasks.length > 0) {
         card.push("<ul class='collection'>");
+        sortTaskByPriority(project.tasks);
         project.tasks.forEach(function(task) {
             if (task.done) {
                 card.push("<li id='" + task._id +
@@ -89,6 +90,24 @@ function getTaskPriority(priority) {
                 "<i class=' secondary-content fa fa-circle fa-lg yellow-text'></i>";
     }
     return icone;
+}
+
+function sortTaskByPriority(tasks) {
+    function assignValue(task) {
+        switch (task.priority) {
+            case "Urgent":
+                return 3;
+                break;
+            case "Important":
+                return 2;
+            default:
+                return 1;
+        }
+    }
+
+    tasks.sort(function(a, b) {
+        return assignValue(b) - assignValue(a);
+    })
 }
 
 function getTaskDelay(delay) {

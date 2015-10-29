@@ -95,6 +95,22 @@ block modals
             button(onclick="addProject()").btn.modal-action.waves-effect.btn-flat Ajouter
             button.btn.modal-action.modal-close.waves-effect.btn-flat Fermer
             
+    #updateProjectModal.modal
+        .modal-content
+            h4 Modifier le projet
+                .row
+                    .input-field.col.s12.m12
+                        input.projectName(type='text' placeholder="Nom du projet")
+                    .input-field.col.s12.m12
+                        input.projectDescription(type='text' placeholder="Description")
+                    .input-field.col.s12.m12
+                        input.projectCategory(type='text' placeholder="Catégorie")
+                    input(type="hidden").projectID
+        .modal-footer
+            button(onclick="updateProject()").btn.modal-action.waves-effect.btn-flat Enregistrer
+            button(onclick="deleteProject()").btn.modal-action.waves-effect Supprimer
+            button.btn.modal-action.modal-close.waves-effect.btn-flat Fermer
+            
     #categoriesModal.modal
         .modal-content
             h4 Filtrer par catégorie

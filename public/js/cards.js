@@ -91,6 +91,23 @@ function toUpdateTask(idTask, idProject) {
     })
 }
 
+function toUpdateProject(idProject) {
+    getProject(idProject, function(project) {
+        $("#updateProjectModal .projectName").val(project.name);
+        $("#updateProjectModal .projectDescription").val(project.description);
+        $("#updateProjectModal .projectCategory").val(project.category);
+        $("#updateProjectModal .projectID").val(idProject);
+        $("#updateProjectModal").openModal();
+    });
+}
+
+// Actualise les infos d'un projet
+function refreshProject(id) {
+    getProject(id, function(project) {
+        $('#' + id).replaceWith(toCard(project));
+    })
+}
+
 function getSelectedPriority(type = 'add') {
     if ($("#" + type + "-Important").is(':checked')) return "Important";
     else if ($("#" + type + "-Urgent").is(':checked')) return "Urgent";

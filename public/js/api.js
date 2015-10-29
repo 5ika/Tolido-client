@@ -2,7 +2,10 @@
 function getProjects(callback) {
     sendRequestToAPI('GET', '/', null, function(projects) {
         projects.sort(function(a, b) {
-            return b.tasks.length - a.tasks.length
+            var aDate = new Date(a.date),
+                bDate = new Date(b.date);
+            if (aDate < bDate) return -1;
+            else return 1;
         })
         if (projects) callback(projects);
     })
@@ -36,9 +39,9 @@ function getTask(idTask, idProject, callback) {
 }
 
 // Actualise les infos d'un projet
-function refreshProject(id) {
+function getProject(id, callback) {
     sendRequestToAPI('GET', '/' + id, null, function(project) {
-        $('#' + id).replaceWith(toCard(project));
+        callback(project);
     })
 }
 
@@ -81,8 +84,7 @@ function updateTask() {
                 delay: $("#updateTaskModal .taskDelay").val()
             }
         },
-        function(
-            response) {
+        function(response) {
             if (response.hasOwnProperty('result') && response.result ==
                 "success") {
                 toast("Tâche modifiée");
@@ -92,13 +94,15 @@ function updateTask() {
 }
 
 // Supprime un projet
-function deleteProject(id) {
+function deleteProject() {
+    $("#updateProjectModal").closeModal();
+    var idProject = $("#updateProjectModal .projectID").val();
     if (confirm("Êtes-vous certain de vouloir supprimer le projet ?"))
-        sendRequestToAPI('DELETE', '/' + id, null, function(response) {
+        sendRequestToAPI('DELETE', '/' + idProject, null, function(response) {
             if (response.hasOwnProperty('result') && response.result ==
                 "success") {
                 toast("Projet supprimé");
-                $('#' + id).remove();
+                $('#' + idProject).remove();
             }
         })
 }
@@ -121,8 +125,27 @@ function addProject() {
     })
 }
 
+function updateProject() {
+    $("#updateProjectModal").closeModal();
+    var idProject = $('#updateProjectModal .projectID').val();
+    var updatedProject = {
+        name: $('#updateProjectModal .projectName').val(),
+        description: $('#updateProjectModal .projectDescription').val(),
+        category: $('#updateProjectModal .projectCategory').val(),
+    }
+    console.log(idProject);
+    sendRequestToAPI('PUT', '/' + idProject, updatedProject, function(response) {
+        if (response.hasOwnProperty('result') && response.result ==
+            "success") {
+            toast("Projet modifié");
+            refreshProject(idProject);
+        }
+    })
+}
+
 // Lance les requêtes à l'API avec tous les paramètres
 function sendRequestToAPI(type, path, data, callback) {
+    console.log(data);
     $.ajax({
         url: serveur + "/api" + path,
         crossDomain: true,
