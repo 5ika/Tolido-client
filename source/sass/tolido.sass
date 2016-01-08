@@ -1,0 +1,138 @@
+$primary-color: #2196f3
+$secondary-color: #f44336
+$third-color : #616161
+$background-color: #ecf0f1
+
+body
+  background-color: $background-color
+  color: $third-color
+  font-family: 'Didact Gothic', sans-serif
+
+nav
+  background-color: $primary-color
+  font-size: 1.5em
+
+  i
+    height: auto
+
+  .page-title
+    vertical-align: middle
+    letter-spacing: -1px
+    margin-left: 20px
+    font-size: 1.5em
+
+  .right
+    padding-left: 15px
+    padding-right: 15px
+    cursor: pointer
+    font-size: 20px
+
+  .dropdown-button
+    padding-left: 140px
+
+  ul a:hover
+    background-color: transparent
+
+.btn-floating
+  position: fixed
+  bottom: 25px
+  right: 25px
+
+.container
+  .collapsible
+    .collapsible-header
+      padding: 10px
+      letter-spacing: 2px
+      transition: letter-spacing 0.5s
+      font-size: 1.3em
+
+      .infos
+        letter-spacing: normal
+        .chip
+          margin-right: 1rem
+        .chip.urgente
+          background-color: $secondary-color
+          color: white
+        .chip.importante
+          background-color: $primary-color
+          color: white
+
+    .collapsible-header.active
+      font-weight: 600
+      letter-spacing: 5px
+
+    .row
+      margin: 0
+
+  .collection
+    .tasks
+      .collection-item
+        padding: 0
+
+      .task
+        background-color: white
+        padding: 10px 20px
+        overflow-y: hidden
+
+      i
+        margin-right: 10px
+        color: $third-color
+      .Important i
+        color: $primary-color
+      .Urgent i
+        color: $secondary-color
+
+      .bgPrimary
+        background-color: $primary-color
+      .bgSecondary
+        background-color: $secondary-color
+
+    .options
+      background-color: #EEEEEE
+      height: auto
+
+      i
+        margin-left: auto
+        margin-right: auto
+        border-radius: 16px
+        padding: 0 10px
+        cursor: pointer
+      i:hover
+        color: $primary-color
+
+.modal-short
+  max-height: 300px
+
+
+// Colors adaptation
+.toast
+  background-color: $third-color
+
+.btn:hover,button:focus
+  background-color: $secondary-color
+  color: white
+
+.secondary-content
+  color: $secondary-color
+  font-weight: 500
+
+.dropdown-content li > a, .dropdown-content li > span, .input-field .prefix.active, .input-field input[type=text]:focus + label, .picker__day.picker__day--today, .picker__close, .picker__today
+  color: $primary-color
+
+/* label underline focus color */
+.input-field input[type=text]:focus
+ border-bottom: 1px solid $primary-color
+ box-shadow: 0 1px 0 0 $primary-color
+
+
+[type="radio"]:checked + label::after
+  background-color: $primary-color
+
+.picker__date-display, .picker__day--selected, .picker__day--selected:hover, .picker--focused .picker__day--selected, .picker__weekday-display
+  background-color: $primary-color
+
+
+@media screen and (max-width: 600px)
+  .modal-lg
+    max-height: 85%
+    width: 95%

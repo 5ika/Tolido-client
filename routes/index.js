@@ -4,7 +4,7 @@ var router = express.Router();
 /* GET home page. */
 
 router.get('/', isLoggedIn, function(req, res) {
-	res.render('cards', {
+	res.render('index', {
 		title: "Projets",
 		token: req.user.token // Envoyer le token à l'utilisateur
 	});

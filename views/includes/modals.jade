@@ -1,0 +1,61 @@
+#addProjectModal.modal.modal-fixed-footer.modal-lg
+    .modal-content
+        h4 Nouveau projet
+            .row
+                .input-field.col.s12.m12
+                    input#projectName(type='text')
+                    label(for="projectName") Nom du projet
+                .input-field.col.s12.m12
+                    input#projectDescription(type='text')
+                    label(for="projectDescription") Description
+                .input-field.col.s12.m12
+                    input#projectCategory(type='text')
+                    label(for="projectCategory") Catégorie
+    .modal-footer
+        button.submit.btn.modal-action.waves-effect.btn-flat Ajouter
+        button.btn.modal-action.modal-close.waves-effect.btn-flat Fermer
+        
+#addTaskModal.modal.modal-fixed-footer.modal-lg
+    .modal-content
+        h4 Nouvelle Tâche
+        .row
+            .input-field.col.s12.m12
+              #taskIdProject
+            .input-field.col.s12.m12
+                input#taskName(type='text')
+                label(for="taskName") Nom de la tâche
+            .input-field.col.s12.m6
+                input#taskGroup(type='text')
+                label(for="taskGroup") Groupe
+            .input-field.col.s12.m6
+                label(for="taskDelay") Délai
+                input#taskDelay(type='date').datepicker
+            .input-field.col.s12.m12
+                .taskPriority.row
+                    .col.s12.m4
+                        input#add-Todo(name="priority" type="radio")
+                        label(for="add-Todo") ToDo
+                    .col.s12.m4
+                        input#add-Important(name="priority" type="radio")
+                        label(for="add-Important") Important
+                    .col.s12.m4
+                        input#add-Urgent(name="priority" type="radio")
+                        label(for="add-Urgent") Urgent
+    .modal-footer
+        button.submit.btn.modal-action.waves-effect.btn-flat Ajouter
+        button.btn.modal-action.modal-close.waves-effect.btn-flat Fermer
+
+#deleteProjectModal.modal.modal-fixed-footer.modal-short.modal-lg
+  .modal-content
+      h4 Suppression d'un projet
+      #removeIdProject
+  .modal-footer
+      button.submit.btn.btn-flat.modal-close Supprimer
+      button.btn.modal-action.modal-close.waves-effect.btn-flat Fermer
+
+ul#menu.dropdown-content
+  li 
+    a(onclick='$("#addProjectModal").openModal()') Nouveau projet
+  li 
+    a(onclick='$("#deleteProjectModal").openModal()') Supprimer projet
+  
