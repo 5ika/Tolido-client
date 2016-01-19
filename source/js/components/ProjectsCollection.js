@@ -1,52 +1,66 @@
 var React = require('react');
 
 var ProjectTasks = React.createClass({
-  render: function(){
+  render: function() {
     // Sort tasks by priority
-    this.props.tasks.sort(function(a,b){
-      if(a.priority == 'Urgent' && b.priority != 'Urgent') return -1;
-      else if(a.priority == 'Important' && b.priority == 'Todo') return -1;
+    this.props.tasks.sort(function(a, b) {
+      if(a.priority === 'Urgent' && b.priority !== 'Urgent') return -1;
+      else if(a.priority === 'Important' && b.priority === 'Todo') return -1;
       else return 1;
     });
 
     // Create collection item for each task
-    var tasks = [];
-    this.props.tasks.forEach(function(task){
+    const tasks = [];
+
+    this.props.tasks.forEach(function(task) {
       let date = '';
-      if(task.delay){
+      let group = '';
+
+      if(task.delay) {
         date = <div className='secondary-content'>{(new Date(task.delay)).toLocaleDateString()}</div>;
       }
-      tasks.push(<li key={task._id} id={task._id} className={"collection-item "+task.priority}>
+
+      if(task.group) group = <span className='group'>{task.group}</span>;
+
+      tasks.push(<li key={task._id} id={task._id} className={'collection-item ' + task.priority}>
         <div className='task'>
           <i className='fa fa-circle'/>
-          {task.name} [{task.group}]
+          {task.name}
+          {group}
           {date}
         </div>
-      </li>)
+      </li>);
     });
-    if(tasks.length > 0) return (<div className='tasks'>{tasks}</div>);
+    if(tasks.length > 0) return <div className='tasks'>{tasks}</div>;
     else return null;
   }
 });
 
 var ProjectInfos = React.createClass({
-  render: function(){
-    var numberOfTodo = 0;
-    var numberOfImportants = 0;
-    var numberOfUrgents = 0;
-    this.props.project.tasks.forEach(function(task){
-      if(task.priority == 'Urgent') numberOfUrgents++;
-      else if(task.priority == 'Important') numberOfImportants++;
-      else numberOfTodo++;
-    })
+  render: function() {
+    let numberOfTodo = 0;
+    let numberOfImportants = 0;
+    let numberOfUrgents = 0;
+    let withDelay = false;
 
-    var urgent,importants = '';
+    this.props.project.tasks.forEach(function(task) {
+      if(task.priority === 'Urgent') numberOfUrgents++;
+      else if(task.priority === 'Important') numberOfImportants++;
+      else numberOfTodo++;
+      if(task.delay) withDelay = true;
+    });
+
+    let urgent, importants, delay;
+
     if(numberOfUrgents > 0)
       urgent = <div className='chip urgente'>{numberOfUrgents}</div>;
     if(numberOfImportants > 0)
       importants = <div className='chip importante'>{numberOfImportants}</div>;
+    if(withDelay)
+      delay = <i className='fa fa-clock-o'/>;
 
     return (<div className='right'>
+      {delay}
       {urgent}
       {importants}
       <div className='chip'>{numberOfTodo}</div>
@@ -55,13 +69,20 @@ var ProjectInfos = React.createClass({
 });
 
 var ProjectsCollection = React.createClass({
-  render: function(){
-    var items = [];
-    this.props.projects.forEach(function(project){
+  render: function() {
+    const items = [];
+
+    this.props.projects.forEach(function(project) {
       items.push(<li key={project._id} id={project._id} className='project'>
         <div className='collapsible-header row'>
           <div className='col s12 m6'>
-            {project.name}
+            <div className='name'>
+              {project.name}
+              <span className='category hide animated fadeIn'> - {project.category}</span>
+            </div>
+            <div className='description hide animated fadeIn'>
+              {project.description}
+            </div>
         </div>
         <div className='col s12 m6 infos'>
           <ProjectInfos project={project}/>
@@ -74,8 +95,8 @@ var ProjectsCollection = React.createClass({
         </div>
       </li>);
     });
-    return(<ul className='collapsible'>{items}</ul>);
+    return <ul className='collapsible'>{items}</ul>;
   }
-})
+});
 
 module.exports = ProjectsCollection;

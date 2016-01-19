@@ -1,22 +1,6 @@
-doctype html
-html(lang='fr')
-  head
-    meta(charset='UTF-8')
-    meta(name='viewport', content='width=device-width,user-scalable=no, initial-scale=1, maximum-scale=1')
-    title Tolido
-    block css
-      //link(rel="icon" href="/fav.ico" type="image/x-icon")
-      link(rel='stylesheet', href='/components/materialize/dist/css/materialize.min.css')
-      link(rel='stylesheet', href='/components/font-awesome/css/font-awesome.min.css')
-      link(rel='stylesheet', href='/components/animate.css/animate.min.css')
-      link(rel='stylesheet', href='/css/tolido.css')
-      link(href='https://fonts.googleapis.com/css?family=Didact+Gothic' rel='stylesheet' type='text/css')
+extends layout
 
-    block js
-        script(src='/components/jquery/dist/jquery.min.js')
-        script(src='/components/materialize/dist/js/materialize.min.js')
-        script(src='/components/jquery-touchswipe/jquery.touchSwipe.min.js')
-  body
+block content
     nav
       .nav-wrapper
         span.page-title Tolido
@@ -24,8 +8,9 @@ html(lang='fr')
           li
             a.dropdown-button.right(data-activates='menu')
               i.fa.fa-ellipsis-v
-    
-    #container.container
+              
+    .container
+      #container !{projects}
     
     a.btn.btn-floating.btn-large.red(onclick='$("#addTaskModal").openModal()')
       i.fa.fa-plus

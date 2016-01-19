@@ -5,45 +5,46 @@ function toast(msg) {
 module.exports = function (server) {
   var api = {};
 
-  //Récupère la liste les projets
+  // Récupère la liste les projets
   api.getProjects = function (callback) {
     api.sendRequestToAPI('GET', '/', null, function (projects) {
       projects.sort(function (a, b) {
-        var aDate = new Date(a.date),
-          bDate = new Date(b.date);
+        const aDate = new Date(a.date);
+        const bDate = new Date(b.date);
+
         if(aDate < bDate) return -1;
         else return 1;
-      })
+      });
       if(projects) callback(projects);
-    })
-  }
+    });
+  };
 
   function getSelectedPriority() {
-    if($("#" + "add-Important").is(':checked')) return "Important";
-    else if($("#" + "add-Urgent").is(':checked')) return "Urgent";
-    else return "Todo";
+    if($('#add-Important').is(':checked')) return 'Important';
+    else if($('#add-Urgent').is(':checked')) return 'Urgent';
+    else return 'Todo';
   }
 
   // Ajoute une nouvelle tâche
   api.addTask = function (callback) {
-    var idProject = $('#taskIdProject select').val();
-    var newTask = {
+    const idProject = $('#taskIdProject select').val();
+    const newTask = {
       name: $('#taskName').val(),
       group: $('#taskGroup').val(),
       priority: getSelectedPriority(),
-      delay: $("#taskDelay").val(),
-    }
+      delay: $('#taskDelay').val()
+    };
+
     api.sendRequestToAPI('POST', '/' + idProject, newTask, function (response) {
-      if(response.hasOwnProperty('result') && response.result ==
-        "success") {
+      if(response.hasOwnProperty('result') && response.result === 'success') {
         $('#addTaskModal').closeModal();
-        toast("Tâche ajoutée");
+        toast('Tâche ajoutée');
         $('#taskName').val('');
         $('#taskGroup').val('');
         callback();
       }
-    })
-  }
+    });
+  };
 
   // // Récupère les infos d'une tâche
   // function getTask(idTask, idProject, callback) {
@@ -61,15 +62,13 @@ module.exports = function (server) {
 
   // Supprime une tâche
   api.deleteTask = function (id, projectId, callback) {
-    api.sendRequestToAPI('DELETE', '/' + projectId + '/' + id, null, function (
-      response) {
-      if(response.hasOwnProperty('result') && response.result ==
-        "success") {
-        toast("Tâche supprimée");
+    api.sendRequestToAPI('DELETE', '/' + projectId + '/' + id, null, function (response) {
+      if(response.hasOwnProperty('result') && response.result === 'success') {
+        toast('Tâche supprimée');
         callback();
       }
     });
-  }
+  };
 
   // // Valide une tâche
   // function validTask(id, projectId) {
@@ -109,34 +108,35 @@ module.exports = function (server) {
 
   // Supprime un projet
   api.deleteProject = function (callback) {
-    var idProject = $('#removeIdProject select').val();
-    if(confirm("Êtes-vous certain de vouloir supprimer le projet ?"))
+    const idProject = $('#removeIdProject select').val();
+
+    if(confirm('Êtes-vous certain de vouloir supprimer le projet ?'))
       api.sendRequestToAPI('DELETE', '/' + idProject, null, function (response) {
-        if(response.hasOwnProperty('result') && response.result ==
-          "success") {
-          toast("Projet supprimé");
+        if(response.hasOwnProperty('result') && response.result === 'success') {
+          toast('Projet supprimé');
           callback();
         }
-      })
-  }
+      });
+  };
 
   // Ajoute un projet
   api.addProject = function (callback) {
-    var newProject = {
+    const newProject = {
       name: $('#projectName').val(),
       description: $('#projectDescription').val(),
       category: $('#projectCategory').val(),
       date: Date.now
     };
-    api.sendRequestToAPI('POST', '/', newProject, function (project) {
+
+    api.sendRequestToAPI('POST', '/', newProject, function () {
       $('#addProjectModal').closeModal();
-      toast("Projet ajouté");
+      toast('Projet ajouté');
       $('#projectName').val('');
       $('#projectDescription').val('');
       $('#projectCategory').val('');
       callback();
     });
-  }
+  };
 
   // function updateProject() {
   //     $("#updateProjectModal").closeModal();
@@ -157,12 +157,12 @@ module.exports = function (server) {
   // }
 
   // Lance les requêtes à l'API avec tous les paramètres
-  api.sendRequestToAPI = function (type, path, data, callback) {
+  api.sendRequestToAPI = function (type, path, body, callback) {
     $.ajax({
-      url: server + "/api" + path,
+      url: server + '/api' + path,
       crossDomain: true,
       method: type,
-      data: data,
+      data: body,
       headers: {
         'x-access-token': userToken
       }
@@ -170,10 +170,9 @@ module.exports = function (server) {
       callback(data);
     }).fail(function (data) {
       console.log(data);
-      toast("Erreur lors de la requête à l'API");
+      toast('Erreur lors de la requête à l\'API');
       callback(null);
     });
-  }
-
+  };
   return api;
 };

@@ -7,6 +7,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var compression = require('compression');
 
 var passport = require('passport');
 var flash = require('connect-flash');
@@ -14,7 +15,6 @@ var session = require('express-session');
 
 var routes = require('./routes/index');
 var user = require('./routes/user');
-var mobile = require('./routes/mobile');
 var config = require('./config');
 
 var app = express();
@@ -40,6 +40,7 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(compression());
 
 // Passport setup
 require('./config/passport')(passport);
@@ -65,7 +66,6 @@ app.use(function(req, res, next) {
 ////////////
 app.use('/', routes);
 app.use('/user', user);
-app.use('/mobile', mobile);
 
 ////////////////////
 // error handlers //

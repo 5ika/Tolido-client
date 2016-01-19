@@ -2,7 +2,8 @@ extends layout
 
 block content
     .container
-        h1 Login
+        h1.primary-color Tolido
+        h3 Login
         if(message != '')
             .alert.alert-danger !{message}
         form(action='/user/login' method='post')

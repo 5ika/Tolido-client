@@ -1,14 +1,14 @@
-var gulp = require('gulp'),
-  gutil = require('gulp-util'),
-  jshint = require('gulp-jshint'),
-  sourcemaps = require('gulp-sourcemaps'),
-  uglify = require('gulp-uglify'),
-  concat = require('gulp-concat'),
-  csslint = require('gulp-csslint'),
-  minifyCss = require('gulp-minify-css'),
-  sass = require('gulp-sass'),
-  bundle = require('gulp-module-bundle'),
-  todo = require('gulp-todo');
+'use strict';
+var gulp = require('gulp');
+var jshint = require('gulp-jshint');
+var sourcemaps = require('gulp-sourcemaps');
+var uglify = require('gulp-uglify');
+var csslint = require('gulp-csslint');
+var minifyCss = require('gulp-minify-css'); // Gulp css nano ?
+var sass = require('gulp-sass');
+var bundle = require('gulp-module-bundle');
+var todo = require('gulp-todo');
+var eslint = require('gulp-eslint');
 // Ne pas oublier d'installer jshint-stylish
 
 // define the default task and add the watch task to it
@@ -16,7 +16,7 @@ gulp.task('default', ['watch']);
 
 // configure which files to watch and what tasks to use on file changes
 gulp.task('watch', function () {
-//  gulp.watch('source/js/*.js', ['build-js']);
+  //  gulp.watch('source/js/*.js', ['build-js']);
   gulp.watch('source/css/*.css', ['minify-css']);
   gulp.watch('source/sass/*.sass', ['build-css']);
   gulp.watch('source/js/**/*', ['bundle']);
@@ -46,21 +46,7 @@ gulp.task('csslint', function () {
     .pipe(csslint.reporter());
 });
 
-/**
- * Build and/or minify
- */
-
-// gulp.task('build-js', ['jshint'], function () {
-//   return gulp.src(['source/js/api.js', 'source/js/format.js', 'source/js/cards.js', 'source/js/touch.js'])
-//     .pipe(sourcemaps.init())
-//     .pipe(concat('bundle.js'))
-//     //do not uglify if gulp is ran with '--type dev'
-//     .pipe(gutil.env.type === 'dev' ? gutil.noop() : uglify())
-//     .pipe(sourcemaps.write())
-//     .pipe(gulp.dest('public/js'));
-// });
-
-gulp.task('minify-js', function(){
+gulp.task('minify-js', function () {
   return gulp.src('public/js/tolido.js')
     .pipe(uglify())
     .pipe(gulp.dest('public/js/'));
@@ -86,6 +72,13 @@ gulp.task('bundle', function () {
     .pipe(gulp.dest('public/js/'));
 });
 
+// JS ESLint
+gulp.task('eslint', function () {
+  return gulp.src('source/js/**/*.js')
+    .pipe(eslint())
+    .pipe(eslint.format())
+    .pipe(eslint.failAfterError());
+});
 
 /**
  * Tools

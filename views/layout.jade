@@ -5,28 +5,18 @@ html(lang='fr')
     meta(name='viewport', content='width=device-width,user-scalable=no, initial-scale=1, maximum-scale=1')
     title Tolido
     block css
-      link(rel="icon" href="/fav.ico" type="image/x-icon")
+      //link(rel="icon" href="/fav.ico" type="image/x-icon")
       link(rel='stylesheet', href='/components/materialize/dist/css/materialize.min.css')
       link(rel='stylesheet', href='/components/font-awesome/css/font-awesome.min.css')
       link(rel='stylesheet', href='/components/animate.css/animate.min.css')
-      link(rel='stylesheet', href='/css/style.css')
+      link(rel='stylesheet', href='/css/tolido.css')
+      link(href='https://fonts.googleapis.com/css?family=Didact+Gothic' rel='stylesheet' type='text/css')
+
     block js
         script(src='/components/jquery/dist/jquery.min.js')
         script(src='/components/materialize/dist/js/materialize.min.js')
-        script(src='/components/jquery.hammer.js/jquery.hammer.js')
-  body
-    header#header.z-depth-1
-        block header
-            span.appname
-                i.fa.fa-list-alt
-                |  Tolido
-            span.hide-on-small-only
-                |  Gestionnaire de tâches
-    
-    .page-title
-        h1 #{title}
-    
-    .container
-        block content
-    block modals
-    block script
+        script(src='/components/jquery-touchswipe/jquery.touchSwipe.min.js')
+  
+    body
+      block content
+  

@@ -40,26 +40,40 @@ nav
 
 .container
   .collapsible
+    border: none
+    box-shadow: none
+
     .collapsible-header
       padding: 10px
       letter-spacing: 2px
       transition: letter-spacing 0.5s
       font-size: 1.3em
-
       .infos
         letter-spacing: normal
         .chip
           margin-right: 1rem
-        .chip.urgente
-          background-color: $secondary-color
-          color: white
-        .chip.importante
-          background-color: $primary-color
-          color: white
+        .fa-clock-o
+          font-size: 30px
+          padding-top: 3px
 
     .collapsible-header.active
-      font-weight: 600
-      letter-spacing: 5px
+      .name
+        font-weight: 600
+        letter-spacing: 3px
+      .category
+        color: $primary-color
+        display: inline !important
+        font-size: 15px
+      .description
+        font-size: 15px
+        display: block !important
+
+    .project
+      transition: margin 0.5s ease
+    .active
+      margin-top: 20px
+      margin-bottom: 20px
+
 
     .row
       margin: 0
@@ -73,6 +87,10 @@ nav
         background-color: white
         padding: 10px 20px
         overflow-y: hidden
+
+        .group
+          color: #BDBDBD
+          margin-left: 10px
 
       i
         margin-right: 10px
@@ -100,8 +118,24 @@ nav
       i:hover
         color: $primary-color
 
+  .counter
+    text-align: right
+    margin: 15px
+    .chip
+      margin-left: 10px
+
 .modal-short
   max-height: 300px
+
+.chip.urgente
+  background-color: $secondary-color
+  color: white
+.chip.importante
+  background-color: $primary-color
+  color: white
+.chip.delayed
+  background-color: $third-color
+  color: white
 
 
 // Colors adaptation
@@ -116,11 +150,11 @@ nav
   color: $secondary-color
   font-weight: 500
 
-.dropdown-content li > a, .dropdown-content li > span, .input-field .prefix.active, .input-field input[type=text]:focus + label, .picker__day.picker__day--today, .picker__close, .picker__today
+.primary-color,.dropdown-content li > a, .dropdown-content li > span, .input-field .prefix.active, .input-field input[type=text]:focus + label, .picker__day.picker__day--today, .picker__close, .picker__today
   color: $primary-color
 
 /* label underline focus color */
-.input-field input[type=text]:focus
+.input-field input[type=text]:focus,input[type="email"]:focus:not([readonly])
  border-bottom: 1px solid $primary-color
  box-shadow: 0 1px 0 0 $primary-color
 
