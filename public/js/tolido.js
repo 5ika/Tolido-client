@@ -19271,7 +19271,8 @@ var ProjectInfos = React.createClass({
     });
 
     var urgent = undefined,
-        importants = undefined,
+        important = undefined,
+        todo = undefined,
         delay = undefined;
 
     if (numberOfUrgents > 0) urgent = React.createElement(
@@ -19279,10 +19280,15 @@ var ProjectInfos = React.createClass({
       { className: 'chip urgente' },
       numberOfUrgents
     );
-    if (numberOfImportants > 0) importants = React.createElement(
+    if (numberOfImportants > 0) important = React.createElement(
       'div',
       { className: 'chip importante' },
       numberOfImportants
+    );
+    if (numberOfTodo > 0) todo = React.createElement(
+      'div',
+      { className: 'chip' },
+      numberOfTodo
     );
     if (withDelay) delay = React.createElement('i', { className: 'fa fa-clock-o' });
 
@@ -19291,12 +19297,8 @@ var ProjectInfos = React.createClass({
       { className: 'right' },
       delay,
       urgent,
-      importants,
-      React.createElement(
-        'div',
-        { className: 'chip' },
-        numberOfTodo
-      )
+      important,
+      todo
     );
   }
 });
@@ -19487,9 +19489,9 @@ module.exports = ProjectsUI;
 },{"./ProjectsCollection":163,"react":160}],165:[function(require,module,exports){
 'use strict';
 
-function toast(msg) {
-  Materialize.toast(msg, 3000);
-}
+var toast = function toast(msg) {
+  return Materialize.toast(msg, 3000);
+};
 
 module.exports = function (server) {
   var api = {};

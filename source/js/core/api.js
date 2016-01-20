@@ -1,6 +1,5 @@
-function toast(msg) {
-  Materialize.toast(msg, 3000);
-}
+const toast = (msg) => Materialize.toast(msg, 3000);
+
 
 module.exports = function (server) {
   var api = {};

@@ -7,6 +7,7 @@ body
   background-color: $background-color
   color: $third-color
   font-family: 'Didact Gothic', sans-serif
+  overflow-y: scroll
 
 nav
   background-color: $primary-color
@@ -124,6 +125,10 @@ nav
     .chip
       margin-left: 10px
 
+.parameters
+  .invalid
+    color: red
+
 .modal-short
   max-height: 300px
 
@@ -137,6 +142,10 @@ nav
   background-color: $third-color
   color: white
 
+.btn-lg
+  width: 100%
+.btn:not(.btn-flat)
+  background-color: $primary-color
 
 // Colors adaptation
 .toast
@@ -150,11 +159,11 @@ nav
   color: $secondary-color
   font-weight: 500
 
-.primary-color,.dropdown-content li > a, .dropdown-content li > span, .input-field .prefix.active, .input-field input[type=text]:focus + label, .picker__day.picker__day--today, .picker__close, .picker__today
+.primary-color,.dropdown-content li > a, .dropdown-content li > span, .input-field .prefix.active, .input-field input[type=text]:focus + label, .picker__day.picker__day--today, .picker__close, .picker__today,input[type="password"]
   color: $primary-color
 
 /* label underline focus color */
-.input-field input[type=text]:focus,input[type="email"]:focus:not([readonly])
+.input-field input[type=text]:focus,input[type="email"]:focus:not([readonly]),input[type="password"]:focus:not([readonly])
  border-bottom: 1px solid $primary-color
  box-shadow: 0 1px 0 0 $primary-color
 

@@ -6,8 +6,13 @@ var config = require('../config');
 
 app.set('port', process.env.PORT || config.app.port);
 
-var server = app.listen(app.get('port'), function() {
-    console.log(
-        config.app.name + ' listening on port ' + server.address().port
-    );
+var server = app.listen(app.get('port'), function () {
+  console.log(
+    config.app.name + ' listening on port ' + server.address().port
+  );
 });
+
+server.on('connection', function (socket) {
+  console.log('Nouvelle connexion');
+  socket.setTimeout(60000); //Keep-alive 1 min
+})
