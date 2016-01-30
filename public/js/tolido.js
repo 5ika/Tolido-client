@@ -19083,24 +19083,9 @@ module.exports = require('./lib/React');
 },{"./lib/React":55}],161:[function(require,module,exports){
 'use strict';
 
-var React = require('react');
-var ReactDOM = require('react-dom');
-var ProjectsUI = require('./components/ProjectsUI');
-var ProjectSelector = require('./components/ProjectSelector');
 var serverAPI = require('../../config.js').server;
 var API = require('./core/api')(serverAPI);
-
-var ProjectsUIComponent, ProjectSelectorComponent, ProjectDeleterComponent;
-
-// Mise à jour de la liste des projets
-function updateUI() {
-  API.getProjects(function (projects) {
-    ProjectsUIComponent.setState({ projects: projects });
-    ProjectSelectorComponent.setState({ projects: projects });
-    ProjectDeleterComponent.setState({ projects: projects });
-    $('select').material_select();
-  });
-}
+var UI = require('./core/UI');
 
 // Suppression d'une tâche (déclenchée par swipe left)
 function actionDeleteTask(taskElmt) {
@@ -19111,7 +19096,7 @@ function actionDeleteTask(taskElmt) {
   taskElmt.addClass('animated slideOutLeft');
   taskElmt.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
     taskElmt.parent().slideUp(function () {
-      API.deleteTask(taskId, projectId, updateUI);
+      API.deleteTask(taskId, projectId, UI.update);
     });
   });
 }
@@ -19123,29 +19108,6 @@ function actionValidTask(taskElmt) {
   taskElmt.addClass('animated slideOutRight');
 }
 
-// Initialisation de la liste des projets
-function initUI() {
-  API.getProjects(function (projects) {
-    ProjectsUIComponent = ReactDOM.render(React.createElement(ProjectsUI, { projects: projects, server: serverAPI }), document.getElementById('container'));
-    ProjectSelectorComponent = ReactDOM.render(React.createElement(ProjectSelector, { projects: projects }), document.getElementById('taskIdProject'));
-    ProjectDeleterComponent = ReactDOM.render(React.createElement(ProjectSelector, { projects: projects }), document.getElementById('removeIdProject'));
-    $('select').material_select();
-    $('.collapsible').collapsible();
-
-    var swipeOffset = 40 * $('.collapsible').width() / 100;
-
-    $('.tasks .collection-item .task').swipe({
-      swipeStatus: function swipeStatus(event, phase, direction, distance) {
-        if (distance > swipeOffset) {
-          $(this).unbind();
-          if (direction === 'left') actionDeleteTask($(this));
-          if (direction === 'right') actionValidTask($(this));
-        }
-      }
-    });
-  });
-}
-
 $(document).ready(function () {
   // Chargement des élements graphiques
   $('select').material_select();
@@ -19155,21 +19117,21 @@ $(document).ready(function () {
   });
 
   // Chargement initial de la liste des projets
-  initUI();
+  UI.init();
 
   // Chargement des triggers
   $('#addProjectModal .submit').click(function () {
-    API.addProject(updateUI);
+    API.addProject(UI.update);
   });
   $('#addTaskModal .submit').click(function () {
-    API.addTask(updateUI);
+    API.addTask(UI.update);
   });
   $('#deleteProjectModal .submit').click(function () {
-    API.deleteProject(updateUI);
+    API.deleteProject(UI.update);
   });
 });
 
-},{"../../config.js":1,"./components/ProjectSelector":162,"./components/ProjectsUI":164,"./core/api":165,"react":160,"react-dom":31}],162:[function(require,module,exports){
+},{"../../config.js":1,"./core/UI":165,"./core/api":166}],162:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -19204,11 +19166,21 @@ module.exports = ProjectSelector;
 'use strict';
 
 var React = require('react');
+var serverAPI = require('../../../config.js').server;
+var API = require('../core/api')(serverAPI);
 
 var ProjectTasks = React.createClass({
   displayName: 'ProjectTasks',
 
+  remove: function remove(taskId) {
+    API.deleteTask(taskId, this.props.projectId, this.props.updater);
+  },
+  valid: function valid(taskId) {
+    API.validTask(taskId, this.props.projectId, this.props.updater);
+  },
   render: function render() {
+    var _this = this;
+
     // Sort tasks by priority
     this.props.tasks.sort(function (a, b) {
       if (a.priority === 'Urgent' && b.priority !== 'Urgent') return -1;else if (a.priority === 'Important' && b.priority === 'Todo') return -1;else return 1;
@@ -19216,18 +19188,14 @@ var ProjectTasks = React.createClass({
 
     // Create collection item for each task
     var tasks = [];
-
     this.props.tasks.forEach(function (task) {
-      var date = '';
-      var group = '';
 
-      if (task.delay) {
-        date = React.createElement(
-          'div',
-          { className: 'secondary-content' },
-          new Date(task.delay).toLocaleDateString()
-        );
-      }
+      var date = '',
+          group = '',
+          valid = '';
+
+      if (task.delay) date = new Date(task.delay).toLocaleDateString();
+      if (!task.done) valid = React.createElement('i', { className: 'fa fa-check fa-lg', onClick: _this.valid.bind(null, task._id) });
 
       if (task.group) group = React.createElement(
         'span',
@@ -19237,14 +19205,20 @@ var ProjectTasks = React.createClass({
 
       tasks.push(React.createElement(
         'li',
-        { key: task._id, id: task._id, className: 'collection-item ' + task.priority },
+        { key: task._id, id: task._id, className: 'collection-item ' + task.priority + (task.done ? ' done' : '') },
         React.createElement(
           'div',
           { className: 'task' },
           React.createElement('i', { className: 'fa fa-circle' }),
           task.name,
           group,
-          date
+          React.createElement(
+            'div',
+            { className: 'secondary-content' },
+            date,
+            valid,
+            React.createElement('i', { className: 'fa fa-close fa-lg', onClick: _this.remove.bind(null, task._id) })
+          )
         )
       ));
     });
@@ -19307,6 +19281,8 @@ var ProjectsCollection = React.createClass({
   displayName: 'ProjectsCollection',
 
   render: function render() {
+    var _this2 = this;
+
     var items = [];
 
     this.props.projects.forEach(function (project) {
@@ -19348,7 +19324,7 @@ var ProjectsCollection = React.createClass({
           React.createElement(
             'ul',
             { className: 'collection' },
-            React.createElement(ProjectTasks, { tasks: project.tasks })
+            React.createElement(ProjectTasks, { tasks: project.tasks, projectId: project._id, updater: _this2.props.updater })
           )
         )
       ));
@@ -19363,7 +19339,7 @@ var ProjectsCollection = React.createClass({
 
 module.exports = ProjectsCollection;
 
-},{"react":160}],164:[function(require,module,exports){
+},{"../../../config.js":1,"../core/api":166,"react":160}],164:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -19479,7 +19455,7 @@ var ProjectsUI = React.createClass({
       'div',
       { className: 'ProjectsUI' },
       React.createElement(Counter, { projects: this.state.projects }),
-      React.createElement(ProjectsCollection, { projects: this.state.projects, server: this.props.serverAPI })
+      React.createElement(ProjectsCollection, { projects: this.state.projects, server: this.props.serverAPI, updater: this.props.updater })
     );
   }
 });
@@ -19487,6 +19463,49 @@ var ProjectsUI = React.createClass({
 module.exports = ProjectsUI;
 
 },{"./ProjectsCollection":163,"react":160}],165:[function(require,module,exports){
+'use strict';
+var React = require('react');
+var ReactDOM = require('react-dom');
+var ProjectsUI = require('../components/ProjectsUI');
+var ProjectSelector = require('../components/ProjectSelector');
+
+var ProjectsUIComponent, ProjectSelectorComponent, ProjectDeleterComponent;
+
+var serverAPI = require('../../../config.js').server;
+var API = require('./api')(serverAPI);
+
+exports.init = function () {
+  API.getProjects(function (projects) {
+    ProjectsUIComponent = ReactDOM.render(React.createElement(ProjectsUI, { projects: projects, server: serverAPI, updater: exports.update }), document.getElementById('container'));
+    ProjectSelectorComponent = ReactDOM.render(React.createElement(ProjectSelector, { projects: projects }), document.getElementById('taskIdProject'));
+    ProjectDeleterComponent = ReactDOM.render(React.createElement(ProjectSelector, { projects: projects }), document.getElementById('removeIdProject'));
+    $('select').material_select();
+    $('.collapsible').collapsible();
+
+    var swipeOffset = 40 * $('.collapsible').width() / 100;
+
+    $('.tasks .collection-item .task').swipe({
+      swipeStatus: function swipeStatus(event, phase, direction, distance) {
+        if (distance > swipeOffset) {
+          $(this).unbind();
+          if (direction === 'left') actionDeleteTask($(this));
+          if (direction === 'right') actionValidTask($(this));
+        }
+      }
+    });
+  });
+};
+
+exports.update = function () {
+  API.getProjects(function (projects) {
+    ProjectsUIComponent.setState({ projects: projects });
+    ProjectSelectorComponent.setState({ projects: projects });
+    ProjectDeleterComponent.setState({ projects: projects });
+    $('select').material_select();
+  });
+};
+
+},{"../../../config.js":1,"../components/ProjectSelector":162,"../components/ProjectsUI":164,"./api":166,"react":160,"react-dom":31}],166:[function(require,module,exports){
 'use strict';
 
 var toast = function toast(msg) {
@@ -19558,19 +19577,16 @@ module.exports = function (server) {
     });
   };
 
-  // // Valide une tâche
-  // function validTask(id, projectId) {
-  //     sendRequestToAPI('PUT', '/' + projectId + '/' + id + '/done', null,
-  //         function(
-  //             response) {
-  //             if (response.hasOwnProperty('result') && response.result ==
-  //                 "success") {
-  //                 toast("Tâche validée");
-  //                 refreshProject(projectId);
-  //             }
-  //         });
-  // }
-  //
+  // Valide une tâche
+  api.validTask = function (id, projectId, callback) {
+    api.sendRequestToAPI('PUT', '/' + projectId + '/' + id + '/done', null, function (response) {
+      if (response.hasOwnProperty('result') && response.result == "success") {
+        toast("Tâche validée");
+        callback();
+      }
+    });
+  };
+
   // // Modifie une tâche
   // function updateTask() {
   //     $("#updateTaskModal").closeModal();

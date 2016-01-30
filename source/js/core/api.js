@@ -69,19 +69,17 @@ module.exports = function (server) {
     });
   };
 
-  // // Valide une tâche
-  // function validTask(id, projectId) {
-  //     sendRequestToAPI('PUT', '/' + projectId + '/' + id + '/done', null,
-  //         function(
-  //             response) {
-  //             if (response.hasOwnProperty('result') && response.result ==
-  //                 "success") {
-  //                 toast("Tâche validée");
-  //                 refreshProject(projectId);
-  //             }
-  //         });
-  // }
-  //
+  // Valide une tâche
+  api.validTask = function(id, projectId, callback) {
+    api.sendRequestToAPI('PUT', '/' + projectId + '/' + id + '/done', null,
+      function (response) {
+        if(response.hasOwnProperty('result') && response.result == "success") {
+          toast("Tâche validée");
+          callback();
+        }
+      });
+  }
+
   // // Modifie une tâche
   // function updateTask() {
   //     $("#updateTaskModal").closeModal();

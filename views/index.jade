@@ -4,17 +4,22 @@ block content
     nav
       .nav-wrapper
         span.page-title Tolido
-        ul.right
+        ul#menu.right
+          li 
+            a(onclick='$("#addProjectModal").openModal()'): i.fa.fa-lg.fa-plus
+          li 
+            a(onclick='$("#deleteProjectModal").openModal()'): i.fa.fa-lg.fa-trash-o
           li
-            a.dropdown-button.right(data-activates='menu')
-              i.fa.fa-ellipsis-v
+            a(href='/user/profile'): i.fa.fa-lg.fa-cog
+          li
+            a(href='/user/logout'): i.fa.fa-lg.fa-sign-out
               
     .container
       #container !{projects}
     
     a.btn.btn-floating.btn-large.red(onclick='$("#addTaskModal").openModal()')
       i.fa.fa-plus
-    
+          
     script.
       var userToken = "#{token.value}";
     script(src='/js/tolido.js')

@@ -27,9 +27,8 @@ nav
     padding-right: 15px
     cursor: pointer
     font-size: 20px
-
-  .dropdown-button
-    padding-left: 140px
+    i
+      vertical-align: top
 
   ul a:hover
     background-color: transparent
@@ -95,11 +94,21 @@ nav
 
       i
         margin-right: 10px
-        color: $third-color
       .Important i
         color: $primary-color
       .Urgent i
         color: $secondary-color
+
+      .secondary-content i
+        color: $third-color
+        cursor: pointer
+        margin-left: 15px
+        &:hover
+          color: $secondary-color
+
+      .done .task
+        background-color: #E0E0E0
+
 
       .bgPrimary
         background-color: $primary-color
@@ -147,9 +156,10 @@ nav
 .btn:not(.btn-flat)
   background-color: $primary-color
 
-// Colors adaptation
 .toast
   background-color: $third-color
+
+// Colors adaptation
 
 .btn:hover,button:focus
   background-color: $secondary-color
@@ -176,6 +186,10 @@ nav
 
 
 @media screen and (max-width: 600px)
+  .container
+    width: 100%
   .modal-lg
     max-height: 85%
     width: 95%
+  nav .right i
+      vertical-align: middle

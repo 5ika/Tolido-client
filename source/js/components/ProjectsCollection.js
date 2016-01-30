@@ -1,6 +1,14 @@
 var React = require('react');
+var serverAPI = require('../../../config.js').server;
+var API = require('../core/api')(serverAPI);
 
 var ProjectTasks = React.createClass({
+  remove: function(taskId){
+      API.deleteTask(taskId, this.props.projectId, this.props.updater);
+  },
+  valid: function(taskId){
+    API.validTask(taskId, this.props.projectId, this.props.updater);
+  },
   render: function() {
     // Sort tasks by priority
     this.props.tasks.sort(function(a, b) {
@@ -11,23 +19,25 @@ var ProjectTasks = React.createClass({
 
     // Create collection item for each task
     const tasks = [];
+    this.props.tasks.forEach((task) => {
 
-    this.props.tasks.forEach(function(task) {
-      let date = '';
-      let group = '';
+      let date = '',group = '', valid = '';
 
-      if(task.delay) {
-        date = <div className='secondary-content'>{(new Date(task.delay)).toLocaleDateString()}</div>;
-      }
+      if(task.delay) date = (new Date(task.delay)).toLocaleDateString();
+      if(!task.done)  valid = <i className='fa fa-check fa-lg' onClick={this.valid.bind(null, task._id)}/>;
 
       if(task.group) group = <span className='group'>{task.group}</span>;
 
-      tasks.push(<li key={task._id} id={task._id} className={'collection-item ' + task.priority}>
+      tasks.push(<li key={task._id} id={task._id} className={'collection-item ' + task.priority + (task.done ? ' done' : '')}>
         <div className='task'>
           <i className='fa fa-circle'/>
           {task.name}
           {group}
-          {date}
+          <div className='secondary-content'>
+            {date}
+            {valid}
+            <i className='fa fa-close fa-lg' onClick={this.remove.bind(null, task._id)}/>
+          </div>
         </div>
       </li>);
     });
@@ -74,7 +84,7 @@ var ProjectsCollection = React.createClass({
   render: function() {
     const items = [];
 
-    this.props.projects.forEach(function(project) {
+    this.props.projects.forEach((project) => {
       items.push(<li key={project._id} id={project._id} className='project'>
         <div className='collapsible-header row'>
           <div className='col s12 m6'>
@@ -92,7 +102,7 @@ var ProjectsCollection = React.createClass({
       </div>
         <div className='collapsible-body'>
           <ul className="collection">
-            <ProjectTasks tasks={project.tasks}/>
+            <ProjectTasks tasks={project.tasks} projectId={project._id} updater={this.props.updater}/>
           </ul>
         </div>
       </li>);
