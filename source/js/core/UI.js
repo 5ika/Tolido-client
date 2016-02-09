@@ -1,19 +1,17 @@
-'use strict';
 var React = require('react');
 var ReactDOM = require('react-dom');
 var ProjectsUI = require('../components/ProjectsUI');
+var AddTaskForm = require('../components/addTask');
 var ProjectSelector = require('../components/ProjectSelector');
-
-var ProjectsUIComponent, ProjectSelectorComponent, ProjectDeleterComponent;
+var ProjectsUIComponent, ProjectDeleterComponent, AddTaskFormComponent;
 
 var serverAPI = require('../../../config.js').server;
 var API = require('./api')(serverAPI);
 
-
 exports.init = () => {
   API.getProjects(function(projects) {
-    ProjectsUIComponent = ReactDOM.render(<ProjectsUI projects={projects} server={serverAPI} updater={exports.update}/>, document.getElementById('container'));
-    ProjectSelectorComponent = ReactDOM.render(<ProjectSelector projects={projects}/>, document.getElementById('taskIdProject'));
+    ProjectsUIComponent = ReactDOM.render(<ProjectsUI projects={projects} server={serverAPI} updater={exports.update}/>, document.getElementById('projects'));
+    AddTaskFormComponent = ReactDOM.render(<AddTaskForm projects={projects} updater={exports.update}/>, document.getElementById('addTask'));
     ProjectDeleterComponent = ReactDOM.render(<ProjectSelector projects={projects}/>, document.getElementById('removeIdProject'));
     $('select').material_select();
     $('.collapsible').collapsible();
@@ -33,10 +31,14 @@ exports.init = () => {
 };
 
 exports.update = () => {
-  API.getProjects(function(projects) {
-    ProjectsUIComponent.setState({projects});
-    ProjectSelectorComponent.setState({projects});
-    ProjectDeleterComponent.setState({projects});
+  API.getProjects(function (projects) {
+    ProjectsUIComponent.setState({
+      projects
+    });
+    ProjectDeleterComponent.setState({
+      projects
+    });
+    AddTaskFormComponent.setState({projects});
     $('select').material_select();
   });
-}
+};

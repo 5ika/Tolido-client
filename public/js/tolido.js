@@ -19111,10 +19111,6 @@ function actionValidTask(taskElmt) {
 $(document).ready(function () {
   // Chargement des élements graphiques
   $('select').material_select();
-  $('.datepicker').pickadate({
-    selectMonths: true,
-    selectYears: 15
-  });
 
   // Chargement initial de la liste des projets
   UI.init();
@@ -19131,7 +19127,7 @@ $(document).ready(function () {
   });
 });
 
-},{"../../config.js":1,"./core/UI":165,"./core/api":166}],162:[function(require,module,exports){
+},{"../../config.js":1,"./core/UI":166,"./core/api":167}],162:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -19339,7 +19335,7 @@ var ProjectsCollection = React.createClass({
 
 module.exports = ProjectsCollection;
 
-},{"../../../config.js":1,"../core/api":166,"react":160}],164:[function(require,module,exports){
+},{"../../../config.js":1,"../core/api":167,"react":160}],164:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -19454,7 +19450,24 @@ var ProjectsUI = React.createClass({
     return React.createElement(
       'div',
       { className: 'ProjectsUI' },
-      React.createElement(Counter, { projects: this.state.projects }),
+      React.createElement(
+        'div',
+        { className: 'row' },
+        React.createElement(
+          'div',
+          { className: 'col s12 m6' },
+          React.createElement(
+            'h4',
+            null,
+            'Mes tâches'
+          )
+        ),
+        React.createElement(
+          'div',
+          { className: 'col s12 m6' },
+          React.createElement(Counter, { projects: this.state.projects })
+        )
+      ),
       React.createElement(ProjectsCollection, { projects: this.state.projects, server: this.props.serverAPI, updater: this.props.updater })
     );
   }
@@ -19464,20 +19477,131 @@ module.exports = ProjectsUI;
 
 },{"./ProjectsCollection":163,"react":160}],165:[function(require,module,exports){
 'use strict';
+
+var React = require('react');
+var serverAPI = require('../../../config.js').server;
+var API = require('../core/api')(serverAPI);
+var ProjectSelector = require('./ProjectSelector');
+
+var addTaskForm = React.createClass({
+  displayName: 'addTaskForm',
+
+  render: function render() {
+    return React.createElement(
+      'div',
+      { className: 'card' },
+      React.createElement(
+        'div',
+        { className: 'card-content' },
+        React.createElement(
+          'div',
+          { className: 'card-title' },
+          'Ajouter une tâche'
+        ),
+        React.createElement(
+          'div',
+          { className: 'row' },
+          React.createElement(
+            'div',
+            { className: 'input-field col s12' },
+            React.createElement('input', { type: 'text', id: 'taskName', placeholder: 'Nouvelle tâche ...' }),
+            React.createElement(
+              'label',
+              { className: 'active' },
+              'Nom de la tâche'
+            )
+          ),
+          React.createElement(
+            'div',
+            { id: 'taskIdProject', className: 'input-field col s12' },
+            React.createElement(ProjectSelector, { projects: this.props.projects }),
+            React.createElement(
+              'label',
+              null,
+              'Projet'
+            )
+          ),
+          React.createElement(
+            'div',
+            { className: 'input-field col s12' },
+            React.createElement(
+              'select',
+              null,
+              React.createElement(
+                'option',
+                { id: 'add-Todo', value: 'Todo' },
+                'ToDo'
+              ),
+              React.createElement(
+                'option',
+                { id: 'add-Important', value: 'Important' },
+                'Important'
+              ),
+              React.createElement(
+                'option',
+                { id: 'add-Urgent', value: 'Urgent' },
+                'Urgent'
+              )
+            ),
+            React.createElement(
+              'label',
+              null,
+              'Priorité'
+            )
+          ),
+          React.createElement(
+            'div',
+            { className: 'input-field col s12' },
+            React.createElement('input', { type: 'date', id: 'taskDelay', className: 'datepicker' }),
+            React.createElement(
+              'label',
+              { className: 'active' },
+              'Date'
+            )
+          ),
+          React.createElement(
+            'div',
+            { className: 'col s12' },
+            React.createElement(
+              'button',
+              { className: 'btn btn-lg', onClick: this.sendTask },
+              'Ajouter'
+            )
+          )
+        )
+      )
+    );
+  },
+  componentDidMount: function componentDidMount() {
+    $('.datepicker').pickadate({
+      selectMonths: true,
+      selectYears: 15
+    });
+  },
+  sendTask: function sendTask() {
+    API.addTask(this.props.updater);
+  }
+});
+
+module.exports = addTaskForm;
+
+},{"../../../config.js":1,"../core/api":167,"./ProjectSelector":162,"react":160}],166:[function(require,module,exports){
+'use strict';
+
 var React = require('react');
 var ReactDOM = require('react-dom');
 var ProjectsUI = require('../components/ProjectsUI');
+var AddTaskForm = require('../components/addTask');
 var ProjectSelector = require('../components/ProjectSelector');
-
-var ProjectsUIComponent, ProjectSelectorComponent, ProjectDeleterComponent;
+var ProjectsUIComponent, ProjectDeleterComponent, AddTaskFormComponent;
 
 var serverAPI = require('../../../config.js').server;
 var API = require('./api')(serverAPI);
 
 exports.init = function () {
   API.getProjects(function (projects) {
-    ProjectsUIComponent = ReactDOM.render(React.createElement(ProjectsUI, { projects: projects, server: serverAPI, updater: exports.update }), document.getElementById('container'));
-    ProjectSelectorComponent = ReactDOM.render(React.createElement(ProjectSelector, { projects: projects }), document.getElementById('taskIdProject'));
+    ProjectsUIComponent = ReactDOM.render(React.createElement(ProjectsUI, { projects: projects, server: serverAPI, updater: exports.update }), document.getElementById('projects'));
+    AddTaskFormComponent = ReactDOM.render(React.createElement(AddTaskForm, { projects: projects, updater: exports.update }), document.getElementById('addTask'));
     ProjectDeleterComponent = ReactDOM.render(React.createElement(ProjectSelector, { projects: projects }), document.getElementById('removeIdProject'));
     $('select').material_select();
     $('.collapsible').collapsible();
@@ -19498,14 +19622,18 @@ exports.init = function () {
 
 exports.update = function () {
   API.getProjects(function (projects) {
-    ProjectsUIComponent.setState({ projects: projects });
-    ProjectSelectorComponent.setState({ projects: projects });
-    ProjectDeleterComponent.setState({ projects: projects });
+    ProjectsUIComponent.setState({
+      projects: projects
+    });
+    ProjectDeleterComponent.setState({
+      projects: projects
+    });
+    AddTaskFormComponent.setState({ projects: projects });
     $('select').material_select();
   });
 };
 
-},{"../../../config.js":1,"../components/ProjectSelector":162,"../components/ProjectsUI":164,"./api":166,"react":160,"react-dom":31}],166:[function(require,module,exports){
+},{"../../../config.js":1,"../components/ProjectSelector":162,"../components/ProjectsUI":164,"../components/addTask":165,"./api":167,"react":160,"react-dom":31}],167:[function(require,module,exports){
 'use strict';
 
 var toast = function toast(msg) {
@@ -19529,7 +19657,10 @@ module.exports = function (server) {
   };
 
   function getSelectedPriority() {
-    if ($('#add-Important').is(':checked')) return 'Important';else if ($('#add-Urgent').is(':checked')) return 'Urgent';else return 'Todo';
+    var priority = 'Todo';
+
+    if ($('#add-Important').is(':checked')) priority = 'Important';else if ($('#add-Urgent').is(':checked')) priority = 'Urgent';
+    return priority;
   }
 
   // Ajoute une nouvelle tâche
@@ -19580,8 +19711,8 @@ module.exports = function (server) {
   // Valide une tâche
   api.validTask = function (id, projectId, callback) {
     api.sendRequestToAPI('PUT', '/' + projectId + '/' + id + '/done', null, function (response) {
-      if (response.hasOwnProperty('result') && response.result == "success") {
-        toast("Tâche validée");
+      if (response.hasOwnProperty('result') && response.result === 'success') {
+        toast('Tâche validée');
         callback();
       }
     });

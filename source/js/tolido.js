@@ -26,10 +26,6 @@ function actionValidTask(taskElmt) {
 $(document).ready(function () {
   // Chargement des élements graphiques
   $('select').material_select();
-  $('.datepicker').pickadate({
-    selectMonths: true,
-    selectYears: 15
-  });
 
   // Chargement initial de la liste des projets
   UI.init();

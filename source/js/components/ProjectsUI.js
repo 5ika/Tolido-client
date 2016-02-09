@@ -42,7 +42,10 @@ const ProjectsUI = React.createClass({
   },
   render: function() {
     return (<div className='ProjectsUI'>
-        <Counter projects={this.state.projects}/>
+        <div className='row'>
+          <div className='col s12 m6'><h4>Mes tâches</h4></div>
+          <div className='col s12 m6'><Counter projects={this.state.projects}/></div>
+        </div>
         <ProjectsCollection projects={this.state.projects} server={this.props.serverAPI} updater={this.props.updater}/>
       </div>
     );

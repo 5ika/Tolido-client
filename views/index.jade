@@ -15,10 +15,11 @@ block content
             a(href='/user/logout'): i.fa.fa-lg.fa-sign-out
               
     .container
-      #container !{projects}
-    
-    a.btn.btn-floating.btn-large.red(onclick='$("#addTaskModal").openModal()')
-      i.fa.fa-plus
+      #container
+        .row
+          #addTask.col.s12.m4
+          .col.s12.m8
+            #projects !{projects}
           
     script.
       var userToken = "#{token.value}";

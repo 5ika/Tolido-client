@@ -67,7 +67,7 @@ var ProjectInfos = React.createClass({
     if(numberOfImportants > 0)
       important = <div className='chip importante'>{numberOfImportants}</div>;
     if(numberOfTodo > 0)
-      todo = <div className='chip'>{numberOfTodo}</div>
+      todo = <div className='chip'>{numberOfTodo}</div>;
     if(withDelay)
       delay = <i className='fa fa-clock-o'/>;
 

@@ -1,6 +1,5 @@
 const toast = (msg) => Materialize.toast(msg, 3000);
 
-
 module.exports = function (server) {
   var api = {};
 
@@ -19,9 +18,11 @@ module.exports = function (server) {
   };
 
   function getSelectedPriority() {
-    if($('#add-Important').is(':checked')) return 'Important';
-    else if($('#add-Urgent').is(':checked')) return 'Urgent';
-    else return 'Todo';
+    let priority = 'Todo';
+
+    if($('#add-Important').is(':checked')) priority = 'Important';
+    else if($('#add-Urgent').is(':checked')) priority = 'Urgent';
+    return priority;
   }
 
   // Ajoute une nouvelle tâche
@@ -73,12 +74,12 @@ module.exports = function (server) {
   api.validTask = function(id, projectId, callback) {
     api.sendRequestToAPI('PUT', '/' + projectId + '/' + id + '/done', null,
       function (response) {
-        if(response.hasOwnProperty('result') && response.result == "success") {
-          toast("Tâche validée");
+        if(response.hasOwnProperty('result') && response.result === 'success') {
+          toast('Tâche validée');
           callback();
         }
       });
-  }
+  };
 
   // // Modifie une tâche
   // function updateTask() {
