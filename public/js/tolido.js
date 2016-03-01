@@ -19236,8 +19236,10 @@ var ProjectInfos = React.createClass({
     var withDelay = false;
 
     this.props.project.tasks.forEach(function (task) {
-      if (task.priority === 'Urgent') numberOfUrgents++;else if (task.priority === 'Important') numberOfImportants++;else numberOfTodo++;
-      if (task.delay) withDelay = true;
+      if (!task.done) {
+        if (task.priority === 'Urgent') numberOfUrgents++;else if (task.priority === 'Important') numberOfImportants++;else numberOfTodo++;
+        if (task.delay) withDelay = true;
+      }
     });
 
     var urgent = undefined,
@@ -19364,7 +19366,7 @@ function countProjectsTasks(projects) {
         for (var _iterator2 = project.tasks[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
           var task = _step2.value;
 
-          counter[task.priority]++;
+          if (!task.done) counter[task.priority]++;
           if (task.delay) counter.Delay++;
         }
       } catch (err) {

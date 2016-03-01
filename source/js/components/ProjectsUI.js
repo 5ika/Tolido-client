@@ -11,7 +11,7 @@ function countProjectsTasks(projects) {
 
   for(const project of projects) {
       for(const task of project.tasks) {
-        counter[task.priority]++;
+        if(!task.done) counter[task.priority]++;
         if(task.delay) counter.Delay++;
       }
   }

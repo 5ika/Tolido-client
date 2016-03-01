@@ -54,10 +54,12 @@ var ProjectInfos = React.createClass({
     let withDelay = false;
 
     this.props.project.tasks.forEach(function(task) {
-      if(task.priority === 'Urgent') numberOfUrgents++;
-      else if(task.priority === 'Important') numberOfImportants++;
-      else numberOfTodo++;
-      if(task.delay) withDelay = true;
+      if(!task.done){
+        if(task.priority === 'Urgent') numberOfUrgents++;
+        else if(task.priority === 'Important') numberOfImportants++;
+        else numberOfTodo++;
+        if(task.delay) withDelay = true;
+      }
     });
 
     let urgent, important, todo, delay;
